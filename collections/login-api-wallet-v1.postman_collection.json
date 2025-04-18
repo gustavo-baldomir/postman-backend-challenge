@@ -1,0 +1,759 @@
+{
+	"info": {
+		"_postman_id": "7d316f55-e93c-4f23-a8e7-d75f1abec8a9",
+		"name": "login-api-wallet-v1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22747449"
+	},
+	"item": [
+		{
+			"name": "Login Exitoso",
+			"item": [
+				{
+					"name": "[TC-001] Login Exitoso - Usuario & Contraseña VALIDO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"access_token\", pm.response.json().access_token);\r",
+									"\r",
+									"pm.test(\"Status code 200 OK - Login exitoso - Usuario & Contraseña VALIDO\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const Ajv = require('ajv');\r",
+									"const ajv = new Ajv({ allErrors: true, strict: true });\r",
+									"\r",
+									"const schema = {\r",
+									"    type: \"object\",\r",
+									"    properties: {\r",
+									"        access_token: { type: \"string\" },\r",
+									"        token_type: { \r",
+									"            type: \"string\",\r",
+									"            enum: [\"bearer\", \"Bearer\"] \r",
+									"        },\r",
+									"        access_token_expires: { type: \"number\" },\r",
+									"        tarjetas: {\r",
+									"            type: \"array\",\r",
+									"            items: {\r",
+									"                type: \"object\",\r",
+									"                properties: {\r",
+									"                    descripcion: { type: \"string\" },\r",
+									"                    numero: { \r",
+									"                        type: \"string\",\r",
+									"                        pattern: \"^\\\\d{12}$\"\r",
+									"                    }\r",
+									"                },\r",
+									"                required: [\r",
+									"                    \"descripcion\",\r",
+									"                    \"numero\"\r",
+									"                ],\r",
+									"                additionalProperties: false\r",
+									"            }\r",
+									"        }\r",
+									"    },\r",
+									"    required: [\r",
+									"        \"access_token\",\r",
+									"        \"token_type\",\r",
+									"        \"access_token_expires\",\r",
+									"        \"tarjetas\"\r",
+									"    ],\r",
+									"    additionalProperties: false\r",
+									"};\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"const validate = ajv.compile(schema);\r",
+									"const valid = validate(response);\r",
+									"\r",
+									"pm.test(\"JSON Schema VALIDO\", function () {\r",
+									"    pm.expect(valid, JSON.stringify(validate.errors, null, 2)).to.be.true;\r",
+									"});\r",
+									"\r",
+									"if (!valid) {\r",
+									"    console.error(\"Errores de validación del schema:\", validate.errors);\r",
+									"}\r",
+									"\r",
+									"/// TEST: Validar que el PATH de la solicitud sea /wallet/sesion ///\r",
+									"\r",
+									"pm.test(\"El PATH de la solicitud es CORRECTO\", function () {\r",
+									"    const expectedPath = \"/wallet/sesion\";\r",
+									"\r",
+									"    // Obtenemos la URL completa y extraemos el path\r",
+									"    const requestUrl = pm.request.url;\r",
+									"    const actualPath = \"/\" + requestUrl.path.join(\"/\");\r",
+									"\r",
+									"    pm.expect(actualPath).to.eql(expectedPath);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IllNS3JYbGdJdTJiNlFoNzVWdVp0cyJ9.eyJodHRwczovL25hcmFuamEuY29tL2luZm8iOnsiY2xpZW50SWQiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSIsImNsaWVudE5hbWUiOiJCMkJFeHRlcm5hbEdhbGljaWEifSwiaXNzIjoiaHR0cHM6Ly9tMm0uc3RhZ2luZy5uYXJhbmpheC5jb20vIiwic3ViIjoiUnhYeXJ3d1ZrSDg0OFVkUGJLWFREUVhrNEVKNktwamFAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vbmFyYW5qYS5jb20vcmFudHkvbWVyY2hhbnRzL2FwaSIsImlhdCI6MTc0NDU5MTc3MiwiZXhwIjoxNzQ0Njc4MTcyLCJzY29wZSI6IndyaXRlLnBheW1lbnQgcmVhZC5wYXltZW50X3JlcXVlc3QgcmVhZC5wYXltZW50X21ldGhvZCB3cml0ZS5wYXltZW50X3JlcXVlc3QgcmVhZC5wcm9tb3Rpb24gcmVhZC5pbnRlZ3JhdG9yIHdyaXRlLnBheW1lbnRfY2FsbGJhY2sgd3JpdGUuZXh0ZXJuYWxfdHJhbnNhY3Rpb24gd3JpdGUuaW50ZWdyYXRvciB3cml0ZS5wYXltZW50X21ldGhvZCByZWFkLnNob3BzIHdyaXRlLnFyX3BheW1lbnRzIHdyaXRlLnN0b3JlcyB3cml0ZS5kaXJlY3QtZGViaXRzLW1zIHJlYWQuZGlyZWN0LWRlYml0cy1tcyByZWFkLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHdyaXRlLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHJlYWQuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5zdG9yZXMgd3JpdGUubWVyY2hhbnQtcGxhbiB3cml0ZS5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50LXB1bmt1IHdyaXRlLnBheW1lbnQtcHVua3UgcmVhZC5xclRvb2xzIHdyaXRlLnFyVG9vbHMgcmVhZC5hcHBsaWNhdGlvbiByZWFkLmJpbiB3cml0ZS5iaW4gd3JpdGUuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5jaXBoZXJfZW5jcnlwdCByZWFkLnNvbnFvIHdyaXRlLmNhcmRfYnJhbmRzIHJlYWQuY2FyZC1tYW5hZ2VtZW50IHJlYWQucGF5bWVudC1nYXRld2F5IHdyaXRlLmNpcGhlci1hcGkgcmVhZC5zZXR0aW5ncyB3cml0ZS5zZXR0aW5ncyB3cml0ZS5hcHBsaWNhdGlvbiByZWFkLnNldHRpbmdzX3JhbnR5IHdyaXRlLnNldHRpbmdzX3JhbnR5IHJlYWQucHJvdmlkZXJzIHdyaXRlLnByb3ZpZGVyIHdyaXRlLnN0YXR1c19yYW50eSByZWFkLnN0YXR1c19yYW50eSByZWFkLmVudGl0aWVzX3JhbnR5IHdyaXRlLnByb3ZpZGVycyB3cml0ZS5wcm92aWRlcnMtYmZmIHJlYWQucHJvdmlkZXJzLWJmZiB3cml0ZS50cmFuc2FjdGlvbnNfcmFudHkgd3JpdGUuc29ucW8gcmVhZC50cmFuc2FjdGlvbnNfcmFudHkgcmVhZC5wYW4tb2JmdXNjYXRlZC1zbHMgcmVhZC5tZXJjaGFudCB3cml0ZS5lbnRpdGllc19yYW50eSByZWFkLmNhcmRfYnJhbmRzIHdyaXRlLnBheW1lbnRzIHdyaXRlLnBheW1lbnQtZ2F0ZXdheSByZWFkLnBheW1lbnQgcmVhZC5tb2RlbHNfcmFudHkgd3JpdGUucmFudHktcmVncmVzc2lvbnMgd3JpdGUubW9kZWxzX3JhbnR5IHJlYWQubGltaXRzIHJlYWQub25ib2FyZGluZy1wYXltZW50IHdyaXRlLnJhbnR5LWNpZyByZWFkLnFyLXBheW1lbnQgd3JpdGUucXItcGF5bWVudCB3cml0ZS5jaGVja291dC1hcGkiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJhenAiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSJ9.Ts0GNOcTIH6_iw4BO8XAvhdd0le49r6wjUFUiODRyHuGoeOU4ZfVt9Qk7oy2-8JgbtziLTMRWNN9bdozuVnRvsZFwq_MRqsHyh-06IBxxERO_G8XX_tFByKU4mhpcdyUc_HUs4F8ID8BuA18w4PJabJMfDkpXQFHzwQYVZp9Wk-HzjnxJb87JeOouVU8DIiJIkkj1OJE305ROVhDAgjW4Gfd3X4XodQtktjOiEMo1EJ8jRDE8Tuon0zIe1FJ9xboRgZ93nzxupdXKnwKXRnPQY6mZRBV-2wy-nHE1uxOtUMhwTJFLfLG54Av51xh8Cd9CZhR_TNpQSABoIE83RxfFw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{user_name}}\",\n  \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL-api-challenge}}/wallet/sesion",
+							"host": [
+								"{{URL-api-challenge}}"
+							],
+							"path": [
+								"wallet",
+								"sesion"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\n  'https://api-challenge-wallet.onrender.com/wallet/sesion' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"username\": \"string\",\n  \"password\": \"string\"\n}'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login Invalido",
+			"item": [
+				{
+					"name": "[TC-002] Login Invalido - Usuario INCORRECTO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code 401 Unauthorized - Login Invalido - Usuario Incorrecto\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Mensaje de error esperado: No se pudo validar las credenciales\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"\r",
+									"    // Se verifica que exista la propiedad \"detail\" //\r",
+									"    pm.expect(res).to.have.property(\"detail\");\r",
+									"\r",
+									"    // Se Verifica que el valor sea exactamente el esperado //\r",
+									"    pm.expect(res.detail).to.eql(\"No se pudo validar las credenciales\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IllNS3JYbGdJdTJiNlFoNzVWdVp0cyJ9.eyJodHRwczovL25hcmFuamEuY29tL2luZm8iOnsiY2xpZW50SWQiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSIsImNsaWVudE5hbWUiOiJCMkJFeHRlcm5hbEdhbGljaWEifSwiaXNzIjoiaHR0cHM6Ly9tMm0uc3RhZ2luZy5uYXJhbmpheC5jb20vIiwic3ViIjoiUnhYeXJ3d1ZrSDg0OFVkUGJLWFREUVhrNEVKNktwamFAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vbmFyYW5qYS5jb20vcmFudHkvbWVyY2hhbnRzL2FwaSIsImlhdCI6MTc0NDU5MTc3MiwiZXhwIjoxNzQ0Njc4MTcyLCJzY29wZSI6IndyaXRlLnBheW1lbnQgcmVhZC5wYXltZW50X3JlcXVlc3QgcmVhZC5wYXltZW50X21ldGhvZCB3cml0ZS5wYXltZW50X3JlcXVlc3QgcmVhZC5wcm9tb3Rpb24gcmVhZC5pbnRlZ3JhdG9yIHdyaXRlLnBheW1lbnRfY2FsbGJhY2sgd3JpdGUuZXh0ZXJuYWxfdHJhbnNhY3Rpb24gd3JpdGUuaW50ZWdyYXRvciB3cml0ZS5wYXltZW50X21ldGhvZCByZWFkLnNob3BzIHdyaXRlLnFyX3BheW1lbnRzIHdyaXRlLnN0b3JlcyB3cml0ZS5kaXJlY3QtZGViaXRzLW1zIHJlYWQuZGlyZWN0LWRlYml0cy1tcyByZWFkLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHdyaXRlLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHJlYWQuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5zdG9yZXMgd3JpdGUubWVyY2hhbnQtcGxhbiB3cml0ZS5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50LXB1bmt1IHdyaXRlLnBheW1lbnQtcHVua3UgcmVhZC5xclRvb2xzIHdyaXRlLnFyVG9vbHMgcmVhZC5hcHBsaWNhdGlvbiByZWFkLmJpbiB3cml0ZS5iaW4gd3JpdGUuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5jaXBoZXJfZW5jcnlwdCByZWFkLnNvbnFvIHdyaXRlLmNhcmRfYnJhbmRzIHJlYWQuY2FyZC1tYW5hZ2VtZW50IHJlYWQucGF5bWVudC1nYXRld2F5IHdyaXRlLmNpcGhlci1hcGkgcmVhZC5zZXR0aW5ncyB3cml0ZS5zZXR0aW5ncyB3cml0ZS5hcHBsaWNhdGlvbiByZWFkLnNldHRpbmdzX3JhbnR5IHdyaXRlLnNldHRpbmdzX3JhbnR5IHJlYWQucHJvdmlkZXJzIHdyaXRlLnByb3ZpZGVyIHdyaXRlLnN0YXR1c19yYW50eSByZWFkLnN0YXR1c19yYW50eSByZWFkLmVudGl0aWVzX3JhbnR5IHdyaXRlLnByb3ZpZGVycyB3cml0ZS5wcm92aWRlcnMtYmZmIHJlYWQucHJvdmlkZXJzLWJmZiB3cml0ZS50cmFuc2FjdGlvbnNfcmFudHkgd3JpdGUuc29ucW8gcmVhZC50cmFuc2FjdGlvbnNfcmFudHkgcmVhZC5wYW4tb2JmdXNjYXRlZC1zbHMgcmVhZC5tZXJjaGFudCB3cml0ZS5lbnRpdGllc19yYW50eSByZWFkLmNhcmRfYnJhbmRzIHdyaXRlLnBheW1lbnRzIHdyaXRlLnBheW1lbnQtZ2F0ZXdheSByZWFkLnBheW1lbnQgcmVhZC5tb2RlbHNfcmFudHkgd3JpdGUucmFudHktcmVncmVzc2lvbnMgd3JpdGUubW9kZWxzX3JhbnR5IHJlYWQubGltaXRzIHJlYWQub25ib2FyZGluZy1wYXltZW50IHdyaXRlLnJhbnR5LWNpZyByZWFkLnFyLXBheW1lbnQgd3JpdGUucXItcGF5bWVudCB3cml0ZS5jaGVja291dC1hcGkiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJhenAiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSJ9.Ts0GNOcTIH6_iw4BO8XAvhdd0le49r6wjUFUiODRyHuGoeOU4ZfVt9Qk7oy2-8JgbtziLTMRWNN9bdozuVnRvsZFwq_MRqsHyh-06IBxxERO_G8XX_tFByKU4mhpcdyUc_HUs4F8ID8BuA18w4PJabJMfDkpXQFHzwQYVZp9Wk-HzjnxJb87JeOouVU8DIiJIkkj1OJE305ROVhDAgjW4Gfd3X4XodQtktjOiEMo1EJ8jRDE8Tuon0zIe1FJ9xboRgZ93nzxupdXKnwKXRnPQY6mZRBV-2wy-nHE1uxOtUMhwTJFLfLG54Av51xh8Cd9CZhR_TNpQSABoIE83RxfFw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"challengeee\",\n  \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL-api-challenge}}/wallet/sesion",
+							"host": [
+								"{{URL-api-challenge}}"
+							],
+							"path": [
+								"wallet",
+								"sesion"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\n  'https://api-challenge-wallet.onrender.com/wallet/sesion' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"username\": \"string\",\n  \"password\": \"string\"\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "[TC-003] Login Invalido - Contraseña INCORRECTA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code 401 Unauthorized - Login Invalido - Contraseña Incorrecta\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Mensaje de error esperado: No se pudo validar las credenciales\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"\r",
+									"    // Se verifica que exista la propiedad \"detail\" //\r",
+									"    pm.expect(res).to.have.property(\"detail\");\r",
+									"\r",
+									"    // Se Verifica que el valor sea exactamente el esperado //\r",
+									"    pm.expect(res.detail).to.eql(\"No se pudo validar las credenciales\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IllNS3JYbGdJdTJiNlFoNzVWdVp0cyJ9.eyJodHRwczovL25hcmFuamEuY29tL2luZm8iOnsiY2xpZW50SWQiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSIsImNsaWVudE5hbWUiOiJCMkJFeHRlcm5hbEdhbGljaWEifSwiaXNzIjoiaHR0cHM6Ly9tMm0uc3RhZ2luZy5uYXJhbmpheC5jb20vIiwic3ViIjoiUnhYeXJ3d1ZrSDg0OFVkUGJLWFREUVhrNEVKNktwamFAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vbmFyYW5qYS5jb20vcmFudHkvbWVyY2hhbnRzL2FwaSIsImlhdCI6MTc0NDU5MTc3MiwiZXhwIjoxNzQ0Njc4MTcyLCJzY29wZSI6IndyaXRlLnBheW1lbnQgcmVhZC5wYXltZW50X3JlcXVlc3QgcmVhZC5wYXltZW50X21ldGhvZCB3cml0ZS5wYXltZW50X3JlcXVlc3QgcmVhZC5wcm9tb3Rpb24gcmVhZC5pbnRlZ3JhdG9yIHdyaXRlLnBheW1lbnRfY2FsbGJhY2sgd3JpdGUuZXh0ZXJuYWxfdHJhbnNhY3Rpb24gd3JpdGUuaW50ZWdyYXRvciB3cml0ZS5wYXltZW50X21ldGhvZCByZWFkLnNob3BzIHdyaXRlLnFyX3BheW1lbnRzIHdyaXRlLnN0b3JlcyB3cml0ZS5kaXJlY3QtZGViaXRzLW1zIHJlYWQuZGlyZWN0LWRlYml0cy1tcyByZWFkLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHdyaXRlLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHJlYWQuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5zdG9yZXMgd3JpdGUubWVyY2hhbnQtcGxhbiB3cml0ZS5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50LXB1bmt1IHdyaXRlLnBheW1lbnQtcHVua3UgcmVhZC5xclRvb2xzIHdyaXRlLnFyVG9vbHMgcmVhZC5hcHBsaWNhdGlvbiByZWFkLmJpbiB3cml0ZS5iaW4gd3JpdGUuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5jaXBoZXJfZW5jcnlwdCByZWFkLnNvbnFvIHdyaXRlLmNhcmRfYnJhbmRzIHJlYWQuY2FyZC1tYW5hZ2VtZW50IHJlYWQucGF5bWVudC1nYXRld2F5IHdyaXRlLmNpcGhlci1hcGkgcmVhZC5zZXR0aW5ncyB3cml0ZS5zZXR0aW5ncyB3cml0ZS5hcHBsaWNhdGlvbiByZWFkLnNldHRpbmdzX3JhbnR5IHdyaXRlLnNldHRpbmdzX3JhbnR5IHJlYWQucHJvdmlkZXJzIHdyaXRlLnByb3ZpZGVyIHdyaXRlLnN0YXR1c19yYW50eSByZWFkLnN0YXR1c19yYW50eSByZWFkLmVudGl0aWVzX3JhbnR5IHdyaXRlLnByb3ZpZGVycyB3cml0ZS5wcm92aWRlcnMtYmZmIHJlYWQucHJvdmlkZXJzLWJmZiB3cml0ZS50cmFuc2FjdGlvbnNfcmFudHkgd3JpdGUuc29ucW8gcmVhZC50cmFuc2FjdGlvbnNfcmFudHkgcmVhZC5wYW4tb2JmdXNjYXRlZC1zbHMgcmVhZC5tZXJjaGFudCB3cml0ZS5lbnRpdGllc19yYW50eSByZWFkLmNhcmRfYnJhbmRzIHdyaXRlLnBheW1lbnRzIHdyaXRlLnBheW1lbnQtZ2F0ZXdheSByZWFkLnBheW1lbnQgcmVhZC5tb2RlbHNfcmFudHkgd3JpdGUucmFudHktcmVncmVzc2lvbnMgd3JpdGUubW9kZWxzX3JhbnR5IHJlYWQubGltaXRzIHJlYWQub25ib2FyZGluZy1wYXltZW50IHdyaXRlLnJhbnR5LWNpZyByZWFkLnFyLXBheW1lbnQgd3JpdGUucXItcGF5bWVudCB3cml0ZS5jaGVja291dC1hcGkiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJhenAiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSJ9.Ts0GNOcTIH6_iw4BO8XAvhdd0le49r6wjUFUiODRyHuGoeOU4ZfVt9Qk7oy2-8JgbtziLTMRWNN9bdozuVnRvsZFwq_MRqsHyh-06IBxxERO_G8XX_tFByKU4mhpcdyUc_HUs4F8ID8BuA18w4PJabJMfDkpXQFHzwQYVZp9Wk-HzjnxJb87JeOouVU8DIiJIkkj1OJE305ROVhDAgjW4Gfd3X4XodQtktjOiEMo1EJ8jRDE8Tuon0zIe1FJ9xboRgZ93nzxupdXKnwKXRnPQY6mZRBV-2wy-nHE1uxOtUMhwTJFLfLG54Av51xh8Cd9CZhR_TNpQSABoIE83RxfFw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{user_name}}\",\n  \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL-api-challenge}}/wallet/sesion",
+							"host": [
+								"{{URL-api-challenge}}"
+							],
+							"path": [
+								"wallet",
+								"sesion"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\n  'https://api-challenge-wallet.onrender.com/wallet/sesion' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"username\": \"string\",\n  \"password\": \"string\"\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "[TC-004] Login Invalido - Usuario & Contraseña INCORRECTA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code 401 Unauthorized - Login Invalido - Usuario & Contraseña Incorrecta\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Mensaje de error esperado: No se pudo validar las credenciales\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"\r",
+									"    // Se verifica que exista la propiedad \"detail\" //\r",
+									"    pm.expect(res).to.have.property(\"detail\");\r",
+									"\r",
+									"    // Se Verifica que el valor sea exactamente el esperado //\r",
+									"    pm.expect(res.detail).to.eql(\"No se pudo validar las credenciales\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IllNS3JYbGdJdTJiNlFoNzVWdVp0cyJ9.eyJodHRwczovL25hcmFuamEuY29tL2luZm8iOnsiY2xpZW50SWQiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSIsImNsaWVudE5hbWUiOiJCMkJFeHRlcm5hbEdhbGljaWEifSwiaXNzIjoiaHR0cHM6Ly9tMm0uc3RhZ2luZy5uYXJhbmpheC5jb20vIiwic3ViIjoiUnhYeXJ3d1ZrSDg0OFVkUGJLWFREUVhrNEVKNktwamFAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vbmFyYW5qYS5jb20vcmFudHkvbWVyY2hhbnRzL2FwaSIsImlhdCI6MTc0NDU5MTc3MiwiZXhwIjoxNzQ0Njc4MTcyLCJzY29wZSI6IndyaXRlLnBheW1lbnQgcmVhZC5wYXltZW50X3JlcXVlc3QgcmVhZC5wYXltZW50X21ldGhvZCB3cml0ZS5wYXltZW50X3JlcXVlc3QgcmVhZC5wcm9tb3Rpb24gcmVhZC5pbnRlZ3JhdG9yIHdyaXRlLnBheW1lbnRfY2FsbGJhY2sgd3JpdGUuZXh0ZXJuYWxfdHJhbnNhY3Rpb24gd3JpdGUuaW50ZWdyYXRvciB3cml0ZS5wYXltZW50X21ldGhvZCByZWFkLnNob3BzIHdyaXRlLnFyX3BheW1lbnRzIHdyaXRlLnN0b3JlcyB3cml0ZS5kaXJlY3QtZGViaXRzLW1zIHJlYWQuZGlyZWN0LWRlYml0cy1tcyByZWFkLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHdyaXRlLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHJlYWQuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5zdG9yZXMgd3JpdGUubWVyY2hhbnQtcGxhbiB3cml0ZS5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50LXB1bmt1IHdyaXRlLnBheW1lbnQtcHVua3UgcmVhZC5xclRvb2xzIHdyaXRlLnFyVG9vbHMgcmVhZC5hcHBsaWNhdGlvbiByZWFkLmJpbiB3cml0ZS5iaW4gd3JpdGUuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5jaXBoZXJfZW5jcnlwdCByZWFkLnNvbnFvIHdyaXRlLmNhcmRfYnJhbmRzIHJlYWQuY2FyZC1tYW5hZ2VtZW50IHJlYWQucGF5bWVudC1nYXRld2F5IHdyaXRlLmNpcGhlci1hcGkgcmVhZC5zZXR0aW5ncyB3cml0ZS5zZXR0aW5ncyB3cml0ZS5hcHBsaWNhdGlvbiByZWFkLnNldHRpbmdzX3JhbnR5IHdyaXRlLnNldHRpbmdzX3JhbnR5IHJlYWQucHJvdmlkZXJzIHdyaXRlLnByb3ZpZGVyIHdyaXRlLnN0YXR1c19yYW50eSByZWFkLnN0YXR1c19yYW50eSByZWFkLmVudGl0aWVzX3JhbnR5IHdyaXRlLnByb3ZpZGVycyB3cml0ZS5wcm92aWRlcnMtYmZmIHJlYWQucHJvdmlkZXJzLWJmZiB3cml0ZS50cmFuc2FjdGlvbnNfcmFudHkgd3JpdGUuc29ucW8gcmVhZC50cmFuc2FjdGlvbnNfcmFudHkgcmVhZC5wYW4tb2JmdXNjYXRlZC1zbHMgcmVhZC5tZXJjaGFudCB3cml0ZS5lbnRpdGllc19yYW50eSByZWFkLmNhcmRfYnJhbmRzIHdyaXRlLnBheW1lbnRzIHdyaXRlLnBheW1lbnQtZ2F0ZXdheSByZWFkLnBheW1lbnQgcmVhZC5tb2RlbHNfcmFudHkgd3JpdGUucmFudHktcmVncmVzc2lvbnMgd3JpdGUubW9kZWxzX3JhbnR5IHJlYWQubGltaXRzIHJlYWQub25ib2FyZGluZy1wYXltZW50IHdyaXRlLnJhbnR5LWNpZyByZWFkLnFyLXBheW1lbnQgd3JpdGUucXItcGF5bWVudCB3cml0ZS5jaGVja291dC1hcGkiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJhenAiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSJ9.Ts0GNOcTIH6_iw4BO8XAvhdd0le49r6wjUFUiODRyHuGoeOU4ZfVt9Qk7oy2-8JgbtziLTMRWNN9bdozuVnRvsZFwq_MRqsHyh-06IBxxERO_G8XX_tFByKU4mhpcdyUc_HUs4F8ID8BuA18w4PJabJMfDkpXQFHzwQYVZp9Wk-HzjnxJb87JeOouVU8DIiJIkkj1OJE305ROVhDAgjW4Gfd3X4XodQtktjOiEMo1EJ8jRDE8Tuon0zIe1FJ9xboRgZ93nzxupdXKnwKXRnPQY6mZRBV-2wy-nHE1uxOtUMhwTJFLfLG54Av51xh8Cd9CZhR_TNpQSABoIE83RxfFw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"user_name\",\n  \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL-api-challenge}}/wallet/sesion",
+							"host": [
+								"{{URL-api-challenge}}"
+							],
+							"path": [
+								"wallet",
+								"sesion"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\n  'https://api-challenge-wallet.onrender.com/wallet/sesion' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"username\": \"string\",\n  \"password\": \"string\"\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "[TC-005] Login Invalido - Usuario VACIO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code 401 Unauthorized - Login Invalido - Usuario Vacio\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Mensaje de error esperado: No se pudo validar las credenciales\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"\r",
+									"    // Se verifica que exista la propiedad \"detail\" //\r",
+									"    pm.expect(res).to.have.property(\"detail\");\r",
+									"\r",
+									"    // Se Verifica que el valor sea exactamente el esperado //\r",
+									"    pm.expect(res.detail).to.eql(\"No se pudo validar las credenciales\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IllNS3JYbGdJdTJiNlFoNzVWdVp0cyJ9.eyJodHRwczovL25hcmFuamEuY29tL2luZm8iOnsiY2xpZW50SWQiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSIsImNsaWVudE5hbWUiOiJCMkJFeHRlcm5hbEdhbGljaWEifSwiaXNzIjoiaHR0cHM6Ly9tMm0uc3RhZ2luZy5uYXJhbmpheC5jb20vIiwic3ViIjoiUnhYeXJ3d1ZrSDg0OFVkUGJLWFREUVhrNEVKNktwamFAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vbmFyYW5qYS5jb20vcmFudHkvbWVyY2hhbnRzL2FwaSIsImlhdCI6MTc0NDU5MTc3MiwiZXhwIjoxNzQ0Njc4MTcyLCJzY29wZSI6IndyaXRlLnBheW1lbnQgcmVhZC5wYXltZW50X3JlcXVlc3QgcmVhZC5wYXltZW50X21ldGhvZCB3cml0ZS5wYXltZW50X3JlcXVlc3QgcmVhZC5wcm9tb3Rpb24gcmVhZC5pbnRlZ3JhdG9yIHdyaXRlLnBheW1lbnRfY2FsbGJhY2sgd3JpdGUuZXh0ZXJuYWxfdHJhbnNhY3Rpb24gd3JpdGUuaW50ZWdyYXRvciB3cml0ZS5wYXltZW50X21ldGhvZCByZWFkLnNob3BzIHdyaXRlLnFyX3BheW1lbnRzIHdyaXRlLnN0b3JlcyB3cml0ZS5kaXJlY3QtZGViaXRzLW1zIHJlYWQuZGlyZWN0LWRlYml0cy1tcyByZWFkLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHdyaXRlLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHJlYWQuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5zdG9yZXMgd3JpdGUubWVyY2hhbnQtcGxhbiB3cml0ZS5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50LXB1bmt1IHdyaXRlLnBheW1lbnQtcHVua3UgcmVhZC5xclRvb2xzIHdyaXRlLnFyVG9vbHMgcmVhZC5hcHBsaWNhdGlvbiByZWFkLmJpbiB3cml0ZS5iaW4gd3JpdGUuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5jaXBoZXJfZW5jcnlwdCByZWFkLnNvbnFvIHdyaXRlLmNhcmRfYnJhbmRzIHJlYWQuY2FyZC1tYW5hZ2VtZW50IHJlYWQucGF5bWVudC1nYXRld2F5IHdyaXRlLmNpcGhlci1hcGkgcmVhZC5zZXR0aW5ncyB3cml0ZS5zZXR0aW5ncyB3cml0ZS5hcHBsaWNhdGlvbiByZWFkLnNldHRpbmdzX3JhbnR5IHdyaXRlLnNldHRpbmdzX3JhbnR5IHJlYWQucHJvdmlkZXJzIHdyaXRlLnByb3ZpZGVyIHdyaXRlLnN0YXR1c19yYW50eSByZWFkLnN0YXR1c19yYW50eSByZWFkLmVudGl0aWVzX3JhbnR5IHdyaXRlLnByb3ZpZGVycyB3cml0ZS5wcm92aWRlcnMtYmZmIHJlYWQucHJvdmlkZXJzLWJmZiB3cml0ZS50cmFuc2FjdGlvbnNfcmFudHkgd3JpdGUuc29ucW8gcmVhZC50cmFuc2FjdGlvbnNfcmFudHkgcmVhZC5wYW4tb2JmdXNjYXRlZC1zbHMgcmVhZC5tZXJjaGFudCB3cml0ZS5lbnRpdGllc19yYW50eSByZWFkLmNhcmRfYnJhbmRzIHdyaXRlLnBheW1lbnRzIHdyaXRlLnBheW1lbnQtZ2F0ZXdheSByZWFkLnBheW1lbnQgcmVhZC5tb2RlbHNfcmFudHkgd3JpdGUucmFudHktcmVncmVzc2lvbnMgd3JpdGUubW9kZWxzX3JhbnR5IHJlYWQubGltaXRzIHJlYWQub25ib2FyZGluZy1wYXltZW50IHdyaXRlLnJhbnR5LWNpZyByZWFkLnFyLXBheW1lbnQgd3JpdGUucXItcGF5bWVudCB3cml0ZS5jaGVja291dC1hcGkiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJhenAiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSJ9.Ts0GNOcTIH6_iw4BO8XAvhdd0le49r6wjUFUiODRyHuGoeOU4ZfVt9Qk7oy2-8JgbtziLTMRWNN9bdozuVnRvsZFwq_MRqsHyh-06IBxxERO_G8XX_tFByKU4mhpcdyUc_HUs4F8ID8BuA18w4PJabJMfDkpXQFHzwQYVZp9Wk-HzjnxJb87JeOouVU8DIiJIkkj1OJE305ROVhDAgjW4Gfd3X4XodQtktjOiEMo1EJ8jRDE8Tuon0zIe1FJ9xboRgZ93nzxupdXKnwKXRnPQY6mZRBV-2wy-nHE1uxOtUMhwTJFLfLG54Av51xh8Cd9CZhR_TNpQSABoIE83RxfFw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"\",\n  \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL-api-challenge}}/wallet/sesion",
+							"host": [
+								"{{URL-api-challenge}}"
+							],
+							"path": [
+								"wallet",
+								"sesion"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\n  'https://api-challenge-wallet.onrender.com/wallet/sesion' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"username\": \"string\",\n  \"password\": \"string\"\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "[TC-006] Login Invalido - Contraseña VACIA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code 401 Unauthorized - Login Invalido - Contraseña Vacia\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Mensaje de error esperado: No se pudo validar las credenciales\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"\r",
+									"    // Se verifica que exista la propiedad \"detail\" //\r",
+									"    pm.expect(res).to.have.property(\"detail\");\r",
+									"\r",
+									"    // Se Verifica que el valor sea exactamente el esperado //\r",
+									"    pm.expect(res.detail).to.eql(\"No se pudo validar las credenciales\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IllNS3JYbGdJdTJiNlFoNzVWdVp0cyJ9.eyJodHRwczovL25hcmFuamEuY29tL2luZm8iOnsiY2xpZW50SWQiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSIsImNsaWVudE5hbWUiOiJCMkJFeHRlcm5hbEdhbGljaWEifSwiaXNzIjoiaHR0cHM6Ly9tMm0uc3RhZ2luZy5uYXJhbmpheC5jb20vIiwic3ViIjoiUnhYeXJ3d1ZrSDg0OFVkUGJLWFREUVhrNEVKNktwamFAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vbmFyYW5qYS5jb20vcmFudHkvbWVyY2hhbnRzL2FwaSIsImlhdCI6MTc0NDU5MTc3MiwiZXhwIjoxNzQ0Njc4MTcyLCJzY29wZSI6IndyaXRlLnBheW1lbnQgcmVhZC5wYXltZW50X3JlcXVlc3QgcmVhZC5wYXltZW50X21ldGhvZCB3cml0ZS5wYXltZW50X3JlcXVlc3QgcmVhZC5wcm9tb3Rpb24gcmVhZC5pbnRlZ3JhdG9yIHdyaXRlLnBheW1lbnRfY2FsbGJhY2sgd3JpdGUuZXh0ZXJuYWxfdHJhbnNhY3Rpb24gd3JpdGUuaW50ZWdyYXRvciB3cml0ZS5wYXltZW50X21ldGhvZCByZWFkLnNob3BzIHdyaXRlLnFyX3BheW1lbnRzIHdyaXRlLnN0b3JlcyB3cml0ZS5kaXJlY3QtZGViaXRzLW1zIHJlYWQuZGlyZWN0LWRlYml0cy1tcyByZWFkLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHdyaXRlLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHJlYWQuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5zdG9yZXMgd3JpdGUubWVyY2hhbnQtcGxhbiB3cml0ZS5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50LXB1bmt1IHdyaXRlLnBheW1lbnQtcHVua3UgcmVhZC5xclRvb2xzIHdyaXRlLnFyVG9vbHMgcmVhZC5hcHBsaWNhdGlvbiByZWFkLmJpbiB3cml0ZS5iaW4gd3JpdGUuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5jaXBoZXJfZW5jcnlwdCByZWFkLnNvbnFvIHdyaXRlLmNhcmRfYnJhbmRzIHJlYWQuY2FyZC1tYW5hZ2VtZW50IHJlYWQucGF5bWVudC1nYXRld2F5IHdyaXRlLmNpcGhlci1hcGkgcmVhZC5zZXR0aW5ncyB3cml0ZS5zZXR0aW5ncyB3cml0ZS5hcHBsaWNhdGlvbiByZWFkLnNldHRpbmdzX3JhbnR5IHdyaXRlLnNldHRpbmdzX3JhbnR5IHJlYWQucHJvdmlkZXJzIHdyaXRlLnByb3ZpZGVyIHdyaXRlLnN0YXR1c19yYW50eSByZWFkLnN0YXR1c19yYW50eSByZWFkLmVudGl0aWVzX3JhbnR5IHdyaXRlLnByb3ZpZGVycyB3cml0ZS5wcm92aWRlcnMtYmZmIHJlYWQucHJvdmlkZXJzLWJmZiB3cml0ZS50cmFuc2FjdGlvbnNfcmFudHkgd3JpdGUuc29ucW8gcmVhZC50cmFuc2FjdGlvbnNfcmFudHkgcmVhZC5wYW4tb2JmdXNjYXRlZC1zbHMgcmVhZC5tZXJjaGFudCB3cml0ZS5lbnRpdGllc19yYW50eSByZWFkLmNhcmRfYnJhbmRzIHdyaXRlLnBheW1lbnRzIHdyaXRlLnBheW1lbnQtZ2F0ZXdheSByZWFkLnBheW1lbnQgcmVhZC5tb2RlbHNfcmFudHkgd3JpdGUucmFudHktcmVncmVzc2lvbnMgd3JpdGUubW9kZWxzX3JhbnR5IHJlYWQubGltaXRzIHJlYWQub25ib2FyZGluZy1wYXltZW50IHdyaXRlLnJhbnR5LWNpZyByZWFkLnFyLXBheW1lbnQgd3JpdGUucXItcGF5bWVudCB3cml0ZS5jaGVja291dC1hcGkiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJhenAiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSJ9.Ts0GNOcTIH6_iw4BO8XAvhdd0le49r6wjUFUiODRyHuGoeOU4ZfVt9Qk7oy2-8JgbtziLTMRWNN9bdozuVnRvsZFwq_MRqsHyh-06IBxxERO_G8XX_tFByKU4mhpcdyUc_HUs4F8ID8BuA18w4PJabJMfDkpXQFHzwQYVZp9Wk-HzjnxJb87JeOouVU8DIiJIkkj1OJE305ROVhDAgjW4Gfd3X4XodQtktjOiEMo1EJ8jRDE8Tuon0zIe1FJ9xboRgZ93nzxupdXKnwKXRnPQY6mZRBV-2wy-nHE1uxOtUMhwTJFLfLG54Av51xh8Cd9CZhR_TNpQSABoIE83RxfFw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{user_name}}\",\n  \"password\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL-api-challenge}}/wallet/sesion",
+							"host": [
+								"{{URL-api-challenge}}"
+							],
+							"path": [
+								"wallet",
+								"sesion"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\n  'https://api-challenge-wallet.onrender.com/wallet/sesion' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"username\": \"string\",\n  \"password\": \"string\"\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "[TC-007] Login Invalido - Usuario & Contraseña VACIA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code 401 Unauthorized - Login Invalido - Usuario & Contraseña Vacia\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Mensaje de error esperado: No se pudo validar las credenciales\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"\r",
+									"    // Se verifica que exista la propiedad \"detail\" //\r",
+									"    pm.expect(res).to.have.property(\"detail\");\r",
+									"\r",
+									"    // Se Verifica que el valor sea exactamente el esperado //\r",
+									"    pm.expect(res.detail).to.eql(\"No se pudo validar las credenciales\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IllNS3JYbGdJdTJiNlFoNzVWdVp0cyJ9.eyJodHRwczovL25hcmFuamEuY29tL2luZm8iOnsiY2xpZW50SWQiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSIsImNsaWVudE5hbWUiOiJCMkJFeHRlcm5hbEdhbGljaWEifSwiaXNzIjoiaHR0cHM6Ly9tMm0uc3RhZ2luZy5uYXJhbmpheC5jb20vIiwic3ViIjoiUnhYeXJ3d1ZrSDg0OFVkUGJLWFREUVhrNEVKNktwamFAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vbmFyYW5qYS5jb20vcmFudHkvbWVyY2hhbnRzL2FwaSIsImlhdCI6MTc0NDU5MTc3MiwiZXhwIjoxNzQ0Njc4MTcyLCJzY29wZSI6IndyaXRlLnBheW1lbnQgcmVhZC5wYXltZW50X3JlcXVlc3QgcmVhZC5wYXltZW50X21ldGhvZCB3cml0ZS5wYXltZW50X3JlcXVlc3QgcmVhZC5wcm9tb3Rpb24gcmVhZC5pbnRlZ3JhdG9yIHdyaXRlLnBheW1lbnRfY2FsbGJhY2sgd3JpdGUuZXh0ZXJuYWxfdHJhbnNhY3Rpb24gd3JpdGUuaW50ZWdyYXRvciB3cml0ZS5wYXltZW50X21ldGhvZCByZWFkLnNob3BzIHdyaXRlLnFyX3BheW1lbnRzIHdyaXRlLnN0b3JlcyB3cml0ZS5kaXJlY3QtZGViaXRzLW1zIHJlYWQuZGlyZWN0LWRlYml0cy1tcyByZWFkLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHdyaXRlLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHJlYWQuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5zdG9yZXMgd3JpdGUubWVyY2hhbnQtcGxhbiB3cml0ZS5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50LXB1bmt1IHdyaXRlLnBheW1lbnQtcHVua3UgcmVhZC5xclRvb2xzIHdyaXRlLnFyVG9vbHMgcmVhZC5hcHBsaWNhdGlvbiByZWFkLmJpbiB3cml0ZS5iaW4gd3JpdGUuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5jaXBoZXJfZW5jcnlwdCByZWFkLnNvbnFvIHdyaXRlLmNhcmRfYnJhbmRzIHJlYWQuY2FyZC1tYW5hZ2VtZW50IHJlYWQucGF5bWVudC1nYXRld2F5IHdyaXRlLmNpcGhlci1hcGkgcmVhZC5zZXR0aW5ncyB3cml0ZS5zZXR0aW5ncyB3cml0ZS5hcHBsaWNhdGlvbiByZWFkLnNldHRpbmdzX3JhbnR5IHdyaXRlLnNldHRpbmdzX3JhbnR5IHJlYWQucHJvdmlkZXJzIHdyaXRlLnByb3ZpZGVyIHdyaXRlLnN0YXR1c19yYW50eSByZWFkLnN0YXR1c19yYW50eSByZWFkLmVudGl0aWVzX3JhbnR5IHdyaXRlLnByb3ZpZGVycyB3cml0ZS5wcm92aWRlcnMtYmZmIHJlYWQucHJvdmlkZXJzLWJmZiB3cml0ZS50cmFuc2FjdGlvbnNfcmFudHkgd3JpdGUuc29ucW8gcmVhZC50cmFuc2FjdGlvbnNfcmFudHkgcmVhZC5wYW4tb2JmdXNjYXRlZC1zbHMgcmVhZC5tZXJjaGFudCB3cml0ZS5lbnRpdGllc19yYW50eSByZWFkLmNhcmRfYnJhbmRzIHdyaXRlLnBheW1lbnRzIHdyaXRlLnBheW1lbnQtZ2F0ZXdheSByZWFkLnBheW1lbnQgcmVhZC5tb2RlbHNfcmFudHkgd3JpdGUucmFudHktcmVncmVzc2lvbnMgd3JpdGUubW9kZWxzX3JhbnR5IHJlYWQubGltaXRzIHJlYWQub25ib2FyZGluZy1wYXltZW50IHdyaXRlLnJhbnR5LWNpZyByZWFkLnFyLXBheW1lbnQgd3JpdGUucXItcGF5bWVudCB3cml0ZS5jaGVja291dC1hcGkiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJhenAiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSJ9.Ts0GNOcTIH6_iw4BO8XAvhdd0le49r6wjUFUiODRyHuGoeOU4ZfVt9Qk7oy2-8JgbtziLTMRWNN9bdozuVnRvsZFwq_MRqsHyh-06IBxxERO_G8XX_tFByKU4mhpcdyUc_HUs4F8ID8BuA18w4PJabJMfDkpXQFHzwQYVZp9Wk-HzjnxJb87JeOouVU8DIiJIkkj1OJE305ROVhDAgjW4Gfd3X4XodQtktjOiEMo1EJ8jRDE8Tuon0zIe1FJ9xboRgZ93nzxupdXKnwKXRnPQY6mZRBV-2wy-nHE1uxOtUMhwTJFLfLG54Av51xh8Cd9CZhR_TNpQSABoIE83RxfFw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"\",\n  \"password\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL-api-challenge}}/wallet/sesion",
+							"host": [
+								"{{URL-api-challenge}}"
+							],
+							"path": [
+								"wallet",
+								"sesion"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\n  'https://api-challenge-wallet.onrender.com/wallet/sesion' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"username\": \"string\",\n  \"password\": \"string\"\n}'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login Invalido - Validaciones de Campos",
+			"item": [
+				{
+					"name": "[TC-008] Login Invalido - Usuario NO ENVIADO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code 422 Unprocessable Entity - Validaciones de campos - Usuario NO ENVIADO\", function () {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IllNS3JYbGdJdTJiNlFoNzVWdVp0cyJ9.eyJodHRwczovL25hcmFuamEuY29tL2luZm8iOnsiY2xpZW50SWQiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSIsImNsaWVudE5hbWUiOiJCMkJFeHRlcm5hbEdhbGljaWEifSwiaXNzIjoiaHR0cHM6Ly9tMm0uc3RhZ2luZy5uYXJhbmpheC5jb20vIiwic3ViIjoiUnhYeXJ3d1ZrSDg0OFVkUGJLWFREUVhrNEVKNktwamFAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vbmFyYW5qYS5jb20vcmFudHkvbWVyY2hhbnRzL2FwaSIsImlhdCI6MTc0NDU5MTc3MiwiZXhwIjoxNzQ0Njc4MTcyLCJzY29wZSI6IndyaXRlLnBheW1lbnQgcmVhZC5wYXltZW50X3JlcXVlc3QgcmVhZC5wYXltZW50X21ldGhvZCB3cml0ZS5wYXltZW50X3JlcXVlc3QgcmVhZC5wcm9tb3Rpb24gcmVhZC5pbnRlZ3JhdG9yIHdyaXRlLnBheW1lbnRfY2FsbGJhY2sgd3JpdGUuZXh0ZXJuYWxfdHJhbnNhY3Rpb24gd3JpdGUuaW50ZWdyYXRvciB3cml0ZS5wYXltZW50X21ldGhvZCByZWFkLnNob3BzIHdyaXRlLnFyX3BheW1lbnRzIHdyaXRlLnN0b3JlcyB3cml0ZS5kaXJlY3QtZGViaXRzLW1zIHJlYWQuZGlyZWN0LWRlYml0cy1tcyByZWFkLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHdyaXRlLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHJlYWQuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5zdG9yZXMgd3JpdGUubWVyY2hhbnQtcGxhbiB3cml0ZS5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50LXB1bmt1IHdyaXRlLnBheW1lbnQtcHVua3UgcmVhZC5xclRvb2xzIHdyaXRlLnFyVG9vbHMgcmVhZC5hcHBsaWNhdGlvbiByZWFkLmJpbiB3cml0ZS5iaW4gd3JpdGUuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5jaXBoZXJfZW5jcnlwdCByZWFkLnNvbnFvIHdyaXRlLmNhcmRfYnJhbmRzIHJlYWQuY2FyZC1tYW5hZ2VtZW50IHJlYWQucGF5bWVudC1nYXRld2F5IHdyaXRlLmNpcGhlci1hcGkgcmVhZC5zZXR0aW5ncyB3cml0ZS5zZXR0aW5ncyB3cml0ZS5hcHBsaWNhdGlvbiByZWFkLnNldHRpbmdzX3JhbnR5IHdyaXRlLnNldHRpbmdzX3JhbnR5IHJlYWQucHJvdmlkZXJzIHdyaXRlLnByb3ZpZGVyIHdyaXRlLnN0YXR1c19yYW50eSByZWFkLnN0YXR1c19yYW50eSByZWFkLmVudGl0aWVzX3JhbnR5IHdyaXRlLnByb3ZpZGVycyB3cml0ZS5wcm92aWRlcnMtYmZmIHJlYWQucHJvdmlkZXJzLWJmZiB3cml0ZS50cmFuc2FjdGlvbnNfcmFudHkgd3JpdGUuc29ucW8gcmVhZC50cmFuc2FjdGlvbnNfcmFudHkgcmVhZC5wYW4tb2JmdXNjYXRlZC1zbHMgcmVhZC5tZXJjaGFudCB3cml0ZS5lbnRpdGllc19yYW50eSByZWFkLmNhcmRfYnJhbmRzIHdyaXRlLnBheW1lbnRzIHdyaXRlLnBheW1lbnQtZ2F0ZXdheSByZWFkLnBheW1lbnQgcmVhZC5tb2RlbHNfcmFudHkgd3JpdGUucmFudHktcmVncmVzc2lvbnMgd3JpdGUubW9kZWxzX3JhbnR5IHJlYWQubGltaXRzIHJlYWQub25ib2FyZGluZy1wYXltZW50IHdyaXRlLnJhbnR5LWNpZyByZWFkLnFyLXBheW1lbnQgd3JpdGUucXItcGF5bWVudCB3cml0ZS5jaGVja291dC1hcGkiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJhenAiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSJ9.Ts0GNOcTIH6_iw4BO8XAvhdd0le49r6wjUFUiODRyHuGoeOU4ZfVt9Qk7oy2-8JgbtziLTMRWNN9bdozuVnRvsZFwq_MRqsHyh-06IBxxERO_G8XX_tFByKU4mhpcdyUc_HUs4F8ID8BuA18w4PJabJMfDkpXQFHzwQYVZp9Wk-HzjnxJb87JeOouVU8DIiJIkkj1OJE305ROVhDAgjW4Gfd3X4XodQtktjOiEMo1EJ8jRDE8Tuon0zIe1FJ9xboRgZ93nzxupdXKnwKXRnPQY6mZRBV-2wy-nHE1uxOtUMhwTJFLfLG54Av51xh8Cd9CZhR_TNpQSABoIE83RxfFw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL-api-challenge}}/wallet/sesion",
+							"host": [
+								"{{URL-api-challenge}}"
+							],
+							"path": [
+								"wallet",
+								"sesion"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\n  'https://api-challenge-wallet.onrender.com/wallet/sesion' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"username\": \"string\",\n  \"password\": \"string\"\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "[TC-009] Login Invalido - Constraseña  NO ENVIADA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code 422 Unprocessable Entity - Validaciones de campos - Contraseña NO ENVIADA\", function () {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IllNS3JYbGdJdTJiNlFoNzVWdVp0cyJ9.eyJodHRwczovL25hcmFuamEuY29tL2luZm8iOnsiY2xpZW50SWQiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSIsImNsaWVudE5hbWUiOiJCMkJFeHRlcm5hbEdhbGljaWEifSwiaXNzIjoiaHR0cHM6Ly9tMm0uc3RhZ2luZy5uYXJhbmpheC5jb20vIiwic3ViIjoiUnhYeXJ3d1ZrSDg0OFVkUGJLWFREUVhrNEVKNktwamFAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vbmFyYW5qYS5jb20vcmFudHkvbWVyY2hhbnRzL2FwaSIsImlhdCI6MTc0NDU5MTc3MiwiZXhwIjoxNzQ0Njc4MTcyLCJzY29wZSI6IndyaXRlLnBheW1lbnQgcmVhZC5wYXltZW50X3JlcXVlc3QgcmVhZC5wYXltZW50X21ldGhvZCB3cml0ZS5wYXltZW50X3JlcXVlc3QgcmVhZC5wcm9tb3Rpb24gcmVhZC5pbnRlZ3JhdG9yIHdyaXRlLnBheW1lbnRfY2FsbGJhY2sgd3JpdGUuZXh0ZXJuYWxfdHJhbnNhY3Rpb24gd3JpdGUuaW50ZWdyYXRvciB3cml0ZS5wYXltZW50X21ldGhvZCByZWFkLnNob3BzIHdyaXRlLnFyX3BheW1lbnRzIHdyaXRlLnN0b3JlcyB3cml0ZS5kaXJlY3QtZGViaXRzLW1zIHJlYWQuZGlyZWN0LWRlYml0cy1tcyByZWFkLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHdyaXRlLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHJlYWQuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5zdG9yZXMgd3JpdGUubWVyY2hhbnQtcGxhbiB3cml0ZS5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50LXB1bmt1IHdyaXRlLnBheW1lbnQtcHVua3UgcmVhZC5xclRvb2xzIHdyaXRlLnFyVG9vbHMgcmVhZC5hcHBsaWNhdGlvbiByZWFkLmJpbiB3cml0ZS5iaW4gd3JpdGUuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5jaXBoZXJfZW5jcnlwdCByZWFkLnNvbnFvIHdyaXRlLmNhcmRfYnJhbmRzIHJlYWQuY2FyZC1tYW5hZ2VtZW50IHJlYWQucGF5bWVudC1nYXRld2F5IHdyaXRlLmNpcGhlci1hcGkgcmVhZC5zZXR0aW5ncyB3cml0ZS5zZXR0aW5ncyB3cml0ZS5hcHBsaWNhdGlvbiByZWFkLnNldHRpbmdzX3JhbnR5IHdyaXRlLnNldHRpbmdzX3JhbnR5IHJlYWQucHJvdmlkZXJzIHdyaXRlLnByb3ZpZGVyIHdyaXRlLnN0YXR1c19yYW50eSByZWFkLnN0YXR1c19yYW50eSByZWFkLmVudGl0aWVzX3JhbnR5IHdyaXRlLnByb3ZpZGVycyB3cml0ZS5wcm92aWRlcnMtYmZmIHJlYWQucHJvdmlkZXJzLWJmZiB3cml0ZS50cmFuc2FjdGlvbnNfcmFudHkgd3JpdGUuc29ucW8gcmVhZC50cmFuc2FjdGlvbnNfcmFudHkgcmVhZC5wYW4tb2JmdXNjYXRlZC1zbHMgcmVhZC5tZXJjaGFudCB3cml0ZS5lbnRpdGllc19yYW50eSByZWFkLmNhcmRfYnJhbmRzIHdyaXRlLnBheW1lbnRzIHdyaXRlLnBheW1lbnQtZ2F0ZXdheSByZWFkLnBheW1lbnQgcmVhZC5tb2RlbHNfcmFudHkgd3JpdGUucmFudHktcmVncmVzc2lvbnMgd3JpdGUubW9kZWxzX3JhbnR5IHJlYWQubGltaXRzIHJlYWQub25ib2FyZGluZy1wYXltZW50IHdyaXRlLnJhbnR5LWNpZyByZWFkLnFyLXBheW1lbnQgd3JpdGUucXItcGF5bWVudCB3cml0ZS5jaGVja291dC1hcGkiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJhenAiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSJ9.Ts0GNOcTIH6_iw4BO8XAvhdd0le49r6wjUFUiODRyHuGoeOU4ZfVt9Qk7oy2-8JgbtziLTMRWNN9bdozuVnRvsZFwq_MRqsHyh-06IBxxERO_G8XX_tFByKU4mhpcdyUc_HUs4F8ID8BuA18w4PJabJMfDkpXQFHzwQYVZp9Wk-HzjnxJb87JeOouVU8DIiJIkkj1OJE305ROVhDAgjW4Gfd3X4XodQtktjOiEMo1EJ8jRDE8Tuon0zIe1FJ9xboRgZ93nzxupdXKnwKXRnPQY6mZRBV-2wy-nHE1uxOtUMhwTJFLfLG54Av51xh8Cd9CZhR_TNpQSABoIE83RxfFw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_name\": \"{{user_name}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL-api-challenge}}/wallet/sesion",
+							"host": [
+								"{{URL-api-challenge}}"
+							],
+							"path": [
+								"wallet",
+								"sesion"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\n  'https://api-challenge-wallet.onrender.com/wallet/sesion' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"username\": \"string\",\n  \"password\": \"string\"\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "[TC-010] Login Invalido - Usuario & Contraseña NO ENVIADA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code 422 Unprocessable Entity - Validaciones de campos - Usuario & Contraseña NO ENVIADA\", function () {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IllNS3JYbGdJdTJiNlFoNzVWdVp0cyJ9.eyJodHRwczovL25hcmFuamEuY29tL2luZm8iOnsiY2xpZW50SWQiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSIsImNsaWVudE5hbWUiOiJCMkJFeHRlcm5hbEdhbGljaWEifSwiaXNzIjoiaHR0cHM6Ly9tMm0uc3RhZ2luZy5uYXJhbmpheC5jb20vIiwic3ViIjoiUnhYeXJ3d1ZrSDg0OFVkUGJLWFREUVhrNEVKNktwamFAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vbmFyYW5qYS5jb20vcmFudHkvbWVyY2hhbnRzL2FwaSIsImlhdCI6MTc0NDU5MTc3MiwiZXhwIjoxNzQ0Njc4MTcyLCJzY29wZSI6IndyaXRlLnBheW1lbnQgcmVhZC5wYXltZW50X3JlcXVlc3QgcmVhZC5wYXltZW50X21ldGhvZCB3cml0ZS5wYXltZW50X3JlcXVlc3QgcmVhZC5wcm9tb3Rpb24gcmVhZC5pbnRlZ3JhdG9yIHdyaXRlLnBheW1lbnRfY2FsbGJhY2sgd3JpdGUuZXh0ZXJuYWxfdHJhbnNhY3Rpb24gd3JpdGUuaW50ZWdyYXRvciB3cml0ZS5wYXltZW50X21ldGhvZCByZWFkLnNob3BzIHdyaXRlLnFyX3BheW1lbnRzIHdyaXRlLnN0b3JlcyB3cml0ZS5kaXJlY3QtZGViaXRzLW1zIHJlYWQuZGlyZWN0LWRlYml0cy1tcyByZWFkLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHdyaXRlLnRyYW5zYWN0aW9ucy1yZXBvcnRzIHJlYWQuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5zdG9yZXMgd3JpdGUubWVyY2hhbnQtcGxhbiB3cml0ZS5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50X3FyX21vZG8gcmVhZC5wYXltZW50LXB1bmt1IHdyaXRlLnBheW1lbnQtcHVua3UgcmVhZC5xclRvb2xzIHdyaXRlLnFyVG9vbHMgcmVhZC5hcHBsaWNhdGlvbiByZWFkLmJpbiB3cml0ZS5iaW4gd3JpdGUuaW5zdGFsbG1lbnRfcGxhbnMgcmVhZC5jaXBoZXJfZW5jcnlwdCByZWFkLnNvbnFvIHdyaXRlLmNhcmRfYnJhbmRzIHJlYWQuY2FyZC1tYW5hZ2VtZW50IHJlYWQucGF5bWVudC1nYXRld2F5IHdyaXRlLmNpcGhlci1hcGkgcmVhZC5zZXR0aW5ncyB3cml0ZS5zZXR0aW5ncyB3cml0ZS5hcHBsaWNhdGlvbiByZWFkLnNldHRpbmdzX3JhbnR5IHdyaXRlLnNldHRpbmdzX3JhbnR5IHJlYWQucHJvdmlkZXJzIHdyaXRlLnByb3ZpZGVyIHdyaXRlLnN0YXR1c19yYW50eSByZWFkLnN0YXR1c19yYW50eSByZWFkLmVudGl0aWVzX3JhbnR5IHdyaXRlLnByb3ZpZGVycyB3cml0ZS5wcm92aWRlcnMtYmZmIHJlYWQucHJvdmlkZXJzLWJmZiB3cml0ZS50cmFuc2FjdGlvbnNfcmFudHkgd3JpdGUuc29ucW8gcmVhZC50cmFuc2FjdGlvbnNfcmFudHkgcmVhZC5wYW4tb2JmdXNjYXRlZC1zbHMgcmVhZC5tZXJjaGFudCB3cml0ZS5lbnRpdGllc19yYW50eSByZWFkLmNhcmRfYnJhbmRzIHdyaXRlLnBheW1lbnRzIHdyaXRlLnBheW1lbnQtZ2F0ZXdheSByZWFkLnBheW1lbnQgcmVhZC5tb2RlbHNfcmFudHkgd3JpdGUucmFudHktcmVncmVzc2lvbnMgd3JpdGUubW9kZWxzX3JhbnR5IHJlYWQubGltaXRzIHJlYWQub25ib2FyZGluZy1wYXltZW50IHdyaXRlLnJhbnR5LWNpZyByZWFkLnFyLXBheW1lbnQgd3JpdGUucXItcGF5bWVudCB3cml0ZS5jaGVja291dC1hcGkiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJhenAiOiJSeFh5cnd3VmtIODQ4VWRQYktYVERRWGs0RUo2S3BqYSJ9.Ts0GNOcTIH6_iw4BO8XAvhdd0le49r6wjUFUiODRyHuGoeOU4ZfVt9Qk7oy2-8JgbtziLTMRWNN9bdozuVnRvsZFwq_MRqsHyh-06IBxxERO_G8XX_tFByKU4mhpcdyUc_HUs4F8ID8BuA18w4PJabJMfDkpXQFHzwQYVZp9Wk-HzjnxJb87JeOouVU8DIiJIkkj1OJE305ROVhDAgjW4Gfd3X4XodQtktjOiEMo1EJ8jRDE8Tuon0zIe1FJ9xboRgZ93nzxupdXKnwKXRnPQY6mZRBV-2wy-nHE1uxOtUMhwTJFLfLG54Av51xh8Cd9CZhR_TNpQSABoIE83RxfFw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL-api-challenge}}/wallet/sesion",
+							"host": [
+								"{{URL-api-challenge}}"
+							],
+							"path": [
+								"wallet",
+								"sesion"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\n  'https://api-challenge-wallet.onrender.com/wallet/sesion' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"username\": \"string\",\n  \"password\": \"string\"\n}'"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
