@@ -1,0 +1,20 @@
+{
+  "name": "postman-backend-challenge",
+  "version": "1.0.0",
+  "description": "Test automation with postman + Newman",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test:login": "newman run collections/login-api-wallet-v1.postman_collection.json --environment .env/env-UAT.postman_environment.json --reporters cli",
+    "test:movimientos": "newman run collections/movimientos-api-wallet-v1.postman_collection.json --environment .env/env-UAT.postman_environment.json --reporters cli",
+    "test:all": "npm run test:login && npm run test:movimientos"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "newman": "^6.2.1"
+  }
+}
