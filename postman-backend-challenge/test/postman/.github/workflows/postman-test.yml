@@ -1,0 +1,25 @@
+name: Run Postman Tests
+
+on: [push, pull_request]
+
+jobs:
+  postman-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman tests
+        run: |
+          newman run tests/postman/automation-API-WALLET-v2.postman_collection.json \
+          --environment tests/postman/env-UAT.postman_environment.json \
+          --reporters cli
